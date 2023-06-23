@@ -1,5 +1,4 @@
 
-# From bfxr, select 'Export Wav' when creating sound
 import pygame
 from pygame import image as img
 import random
@@ -25,7 +24,6 @@ GREEN = (0, 255, 0)
 RED = (255, 0, 0)
 YELLOW = (255, 255, 0)
 
-# Initialize pygame and create window
 pygame.init()
 pygame.mixer.init()  # Sound control
 screen = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
@@ -33,7 +31,6 @@ pygame.display.set_caption("spirited away")
 clock = pygame.time.Clock()
 
 
-# Search through fonts on your machine and get closes match. Otherwise, include font file on your project.
 font_name = pygame.font.match_font('arial')
 def draw_text(surface, text, size, x, y):
     font = pygame.font.Font(font_name, size)
@@ -172,8 +169,6 @@ class Mob(pygame.sprite.Sprite):
         if self.rect.top > WINDOW_HEIGHT + 10 or self.rect.left < -25 or self.rect.right > WINDOW_WIDTH + 20:
             self.spawn()
 
-
-
     def rotate(self):
         now = pygame.time.get_ticks()
         # Current time - time last update. e.g now=1000, last_update=900, it's been 100ms
@@ -262,7 +257,6 @@ def show_game_over_scrn():
             if e.type == pygame.KEYUP:  # pygame.KEYDOWN is too fast
                 waiting = False
 
-# Load all graphics
 background = img.load(path.join(img_dir, "xxx.png")).convert_alpha()
 background_rect = background.get_rect()
 player_img = img.load(path.join(img_dir, "chihiro.png")).convert_alpha()
@@ -279,7 +273,6 @@ meteor_list = ['spirit1.png','spirithaku.png', 'spirit3.png',
 
 meteor_images = []
 
-# Load and resize each meteor image
 for meteor_filename in meteor_list:
     meteor_image = img.load(path.join(img_dir, meteor_filename)).convert_alpha()
     meteor_images.append(meteor_image)
@@ -309,7 +302,6 @@ for i in range(3):
     powerup_images = {}
     powerup_images['gun'] = img.load(path.join(img_dir, 'bolt_gold.png')).convert_alpha()
 
-    # Load all sounds - relies on pygame.mixer.init() above
     shoot_sound = pygame.mixer.Sound(path.join(sound_dir, 'Laser_Shoot.wav'))
     explosion_sounds = []
 
@@ -322,7 +314,6 @@ pygame.mixer.music.load(path.join(sound_dir, 'joe.mp3'))
 pygame.mixer.music.set_volume(0.3)
 
 pygame.mixer.music.play(loops=-1)  # Infinite loop
-# Game loop
 game_over = True
 game_running = True
 while game_running:
@@ -346,11 +337,8 @@ while game_running:
         if event.type == pygame.QUIT:
             game_running = False
 
-    # Update
     all_sprites.update()
 
-    #  *******COLLISIONS*******
-    # Check if bullet hit mob
     hits = spr.groupcollide(mobs, bullets, True, True)  # delete both bullet and mob if collision
     for hit in hits:
         
@@ -365,7 +353,6 @@ while game_running:
         newMob()
 
 
-    # Check if mob hit player. returns a list (hits)
     hits = spr.spritecollide(player, mobs, True, spr.collide_circle)  # control if it gets deleted
     for hit in hits:
         player.shield -= hit.radius * 2
@@ -383,14 +370,12 @@ while game_running:
         
 
 
-    # Check if player caught powerup
     hits = spr.spritecollide(player, powerups, True)  # make sprite disappear
     for hit in hits:
         if hit.type == 'gun':
             powerup_sound.play()
             player.powerup()
 
-    #  If player died and explosion has finished playing
     if player.lives == 0 and not death_explosion.alive():
   
         screen.blit(gameover_img, (0, 0))
@@ -399,11 +384,9 @@ while game_running:
         game_over = True
 
 
-    # Update the display
     pygame.display.update()
     
 
-    # Draw / render
     screen.fill(BLACK)
     screen.blit(background, background_rect)
     all_sprites.draw(screen)
